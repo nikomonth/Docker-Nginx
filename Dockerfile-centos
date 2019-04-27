@@ -1,9 +1,12 @@
 FROM centos:latest
+# 特権モードで起動する場合
+# docker run -d --privileged -p 8080:80  centos:1.0 /sbin/init
+# https://cstoku.dev/posts/2016/ad2016-docker-vm-gs/
+# その後、nginx サービスを起動
+# sh-4.2# systemctl start nginx
 
 RUN yum install -y epel-release
 RUN yum install -y nginx
-RUN yum -y install php-fpm
-
 
 COPY ./demo/ /sites/
 COPY ./nginx.conf /etc/nginx/
