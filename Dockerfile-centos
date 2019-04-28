@@ -2,11 +2,24 @@ FROM centos:latest
 # 特権モードで起動する場合
 # docker run -d --privileged -p 8080:80  centos:1.0 /sbin/init
 # https://cstoku.dev/posts/2016/ad2016-docker-vm-gs/
-# その後、nginx サービスを起動
+# 次に、nginx サービスの設定
+# sh-4.2# touch /lib/systemd/system/nginx.service 
+# sh-4.2# vi /lib/systemd/system/nginx.service
+# 下記内容を設定する。"nginx systemdで検索：nginx systemd service fileがhit"
+# https://www.nginx.com/resources/wiki/start/topics/examples/systemd/
+# そして、nginxサービス起動
 # sh-4.2# systemctl start nginx
 
 RUN yum install -y epel-release
-RUN yum install -y nginx
+RUN yum install -y wget
+RUN wget http://nginx.org/download/nginx-1.15.12.tar.gz
+RUN tar -zxvf nginx-1.15.12.tar.gz
+RUN yum groupinstall -y "Development Tools"
+RUN yum install -y pcre pcre-devel zlib zlib-devel openssl openssl-devel
+WORKDIR /nginx-1.15.12/
+RUN ./configure --sbin-path=/usr/bin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-pcre --pid-path=/var/run/nginx.pid --with-http_ssl_module
+RUN make
+RUN make install
 
 COPY ./demo/ /sites/
 COPY ./nginx.conf /etc/nginx/
