@@ -10,6 +10,11 @@ FROM centos:latest
 # そして、nginxサービス起動
 # sh-4.2# systemctl start nginx
 
+#php-fpm install
+RUN yum install -y http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+RUN yum --enablerepo=remi-php73 install -y php-fpm
+
+#nginx install
 RUN yum install -y epel-release
 RUN yum install -y wget
 RUN wget http://nginx.org/download/nginx-1.15.12.tar.gz
@@ -17,11 +22,17 @@ RUN tar -zxvf nginx-1.15.12.tar.gz
 RUN yum groupinstall -y "Development Tools"
 RUN yum install -y pcre pcre-devel zlib zlib-devel openssl openssl-devel
 RUN yum install -y gd-devel
+
+#php-fpm config
+RUN sed -i -e '38s/.*/listen = 127.0.0.1:9000/' /etc/php-fpm.d/www.conf 
+
+#nginx config
 WORKDIR /nginx-1.15.12/
 RUN ./configure --sbin-path=/usr/bin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-pcre --pid-path=/var/run/nginx.pid --with-http_ssl_module --with-http_image_filter_module=dynamic --modules-path=/etc/nginx/modules
 RUN make
 RUN make install
 
+COPY ./info.php /sites/
 COPY ./demo/ /sites/
 COPY ./nginx.conf /etc/nginx/
 COPY ./nginx.service /lib/systemd/system/
