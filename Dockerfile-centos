@@ -23,6 +23,9 @@ RUN yum groupinstall -y "Development Tools"
 RUN yum install -y pcre pcre-devel zlib zlib-devel openssl openssl-devel
 RUN yum install -y gd-devel
 
+#other tools install
+RUN yum install -y httpd-tools
+
 #php-fpm config
 RUN sed -i -e '38s/.*/listen = 127.0.0.1:9000/' /etc/php-fpm.d/www.conf 
 

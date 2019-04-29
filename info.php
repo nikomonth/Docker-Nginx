@@ -1,1 +1,2 @@
+<?php sleep(1); ?>
 <?php phpinfo(); ?>
