@@ -40,6 +40,9 @@ COPY ./nginx.conf /etc/nginx/
 COPY ./nginx.service /lib/systemd/system/
 COPY ./resp.txt /nginx-1.15.12/
 COPY ./show_request.php /nginx-1.15.12/
+COPY ./s1 /nginx-1.15.12/
+COPY ./s2 /nginx-1.15.12/
+COPY ./s3 /nginx-1.15.12/
 EXPOSE 80
 
 CMD nginx -g "daemon off;"
